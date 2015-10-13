@@ -1,0 +1,25 @@
+{
+  "name": "build_static",
+  "version": "0.0.0",
+  "authors": [
+    "Thomas Maurice <thomas@maurice.fr>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4",
+    "hint.css": "~1.3.5",
+    "font-awesome": "fontawesome#~4.4.0"
+  }
+}
