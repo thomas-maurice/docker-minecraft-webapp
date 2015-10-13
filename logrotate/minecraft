@@ -1,0 +1,7 @@
+/home/minecraft/volume/logs/*.log {
+    rotate 7
+    daily
+    missingok
+    compress
+    copytruncate
+}

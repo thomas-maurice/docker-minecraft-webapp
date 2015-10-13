@@ -1,0 +1,2 @@
+# Hourly backup of the server
+0 * * * * /backup.sh >> /home/minecraft/volume/logs/backup.log 2>&1

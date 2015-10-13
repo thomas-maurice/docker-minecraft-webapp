@@ -1,0 +1,52 @@
+{% if user.is_authenticated %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Minecraft UI</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Users <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/minecraft/users"><i class="fa fa-eye"></i> Show the users</a></li>
+                        {% if user.is_staff %}
+                        <li><a href="/minecraft/user/create"><i class="fa fa-plus"></i> Create a user</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% if user.is_staff %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-server"></i> Server <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/minecraft/system/"><i class="fa fa-gear"></i> System</a></li>
+                        <li><a href="/minecraft/console/"><i class="fa fa-terminal"></i> Console access</a></li>
+                    </ul>
+                </li>
+                <li><a href="/minecraft/control/"><i class="fa fa-globe"></i> Control</a></li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_staff %}
+                    <li><a href="/admin"><i class="fa fa-wrench"></i> Admin zone</a></li>
+                {% endif %}
+                <li><a href="javascript:void(0);" data-toggle="modal" data-target="#helpmodal"><i class="fa fa-question-circle"></i> Help</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user.username }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/login/password_change"><i class="fa fa-lock"></i> Change my password</a></li>
+                        <li><a href="/login/logout"><i class="fa fa-power-off"></i> Log out</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+{% endif %}

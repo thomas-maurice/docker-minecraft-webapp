@@ -1,0 +1,6 @@
+motd=Default MoTD, change me :)
+spawn-animals=true
+spawn-monsters=true
+online-mode=false
+max-players=10
+#resource-pack=http://test.ra.maurice.fr/textures/LIFE.zip

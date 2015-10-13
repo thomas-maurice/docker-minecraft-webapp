@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% block title %}Server console{% endblock title %}
+
+{% block script %}
+<script type="text/javascript">
+    function htmlEncode(value){
+        if (value) {
+            return $('<div/>').text(value).html();
+        } else {
+            return '';
+        }
+    }
+
+    function doCommand() {
+        if($('#command').val() == "") return;
+        var command = $('#command').val();
+        $('#command').val('');
+        $('#console').append('\n< <span style="color: yellow">' + command + "</span>");
+        $('#console').scrollTop($('#console')[0].scrollHeight);
+        $.ajax({
+            type: "POST",
+            url: '/minecraft/api/console/',
+            data: {'command': command},
+            dataType: 'json',
+            success: function(data) {
+                var resp = data.response
+                if(data.command.match(/help.*/)) {
+                    resp = data.response.replace(/(\/[a-zA-Z]+)/g, "\n $1");
+                }
+                resp = htmlEncode(resp.replace("\n", "\n  "));
+                $('#console').append('\n> <span style="color: white">' + resp + "</span>");
+                $('#console').scrollTop($('#console')[0].scrollHeight);
+            },
+            error: function(jqxhr, textstatus) {
+                console.log(jqxhr); console.log(textstatus)
+                $('#console').append('\n> <span style="color: red">' + jqxhr.status + " : " + jqxhr.statusText + "</span>");
+                $('#console').scrollTop($('#console')[0].scrollHeight);
+            },
+        });
+    }
+
+    function adjustHeight() {
+        var height = $(window).height()-$("#commandbar").height()-20-2*$('#footer').height() + "px";
+        $('#console').css("max-height", height);
+        $('#console').css("height", height);
+        $('#console').scrollTop($('#console')[0].scrollHeight);
+    }
+
+    $(document).ready(function() {
+        var csrftoken = $.cookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $(window).resize(function() {
+            adjustHeight();
+        });
+
+        $("#sendbutton").click(function() {
+            doCommand();
+        });
+
+        $('#command').keyup(function (e) {
+             if (e.keyCode == 13) {
+                doCommand();
+            }
+        });
+
+        $("#clearbutton").click(function() {
+            $('#console').html("");
+        });
+
+        adjustHeight();
+    });
+</script>
+{% endblock script %}
+
+{% block body %}
+    <div>
+        <div class="col-md-12">
+            <pre id="console"  style="color: green; background-color: black;"><code># Type your commands to the server here. Type 'help' for help.</code></pre>
+        </div>
+        <div class="col-md-12">
+          <div id="commandbar" class="input-group input-group-lg">
+            <input id="command" style="font-family: monospace" name="command" type="text" class="form-control" placeholder="Enter your command here !" required autofocus>
+            <div class="input-group-btn">
+              <button id="sendbutton" class="btn btn-warning">Send !</button>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li><a class="hint--left hint--rounded text-warning" data-hint="" id="ninjamode" href="javascript:void(0);">One option</a></li>
+                <li><a class="hint--left hint--rounded text-warning" data-hint="Clears the console" id="clearbutton" href="javascript:void(0);">Clear</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endblock body %}

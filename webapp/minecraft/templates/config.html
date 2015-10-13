@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% block title %}System information{% endblock title %}
+
+{% block script %}
+<script type="text/javascript">
+    var csrftoken = $.cookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    function refreshServicesList() {
+        $.ajax({
+            type: "GET",
+            url: '/minecraft/api/service/',
+            data: {},
+            dataType: 'json',
+            success: function(data) {
+                var table = ""
+                for(i=0; i<data.length;i++) {
+                    var row = '<tr>';
+                    row +='<td class="text-center">'+data[i].name+'</td><td class="text-center">';
+                    if(data[i].statename == "RUNNING") {
+                        row += '<span class="label label-success">'
+                    } else if (data[i].statename == 'FATAL' || data[i].statename == 'BACKOFF') {
+                        row += '<span class="label label-danger">'
+                    } else if (data[i].statename == 'STOPPED') {
+                        row += '<span class="label label-warning">'
+                    } else {
+                        row += '<span class="label label-default">'
+                    }
+                    row += data[i].statename + "</span></td>"
+                    //row +='<td><input type="text" id="sensor_'+data.data[i].id+'_name" class="form-control" value="'+data.data[i].name+'" /></td>';
+                    row += '<td class="text-center"><button type="button" class="btn btn-danger" onclick=\'alterService(\"'+data[i].name+'\", \"STOP\")\'>Stop</button>';
+                    row += ' <button type="button" class="btn btn-success" onclick=\'alterService(\"'+data[i].name+'\", \"START\")\'>Start</button>';
+                    row += ' <button type="button" class="btn btn-info" onclick=\'alterService(\"'+data[i].name+'\", \"RESTART\")\'>Restart</button>';
+                    //row += '<button type="button" class="btn btn-danger" onclick=\'delSensor(\"'+data.data[i].id+'\")\'>Remove</button></td>';
+                    row += "</td></tr>";
+                    table += row
+                }
+                $('#servicelist').html(table);
+            },
+            failure: function(data) {
+                $.notify('Could not get the service list : ' + data.detail, 'error');
+            }
+        });
+    }
+
+    function alterService(name, action) {
+        $.notify("Launching " + action + " on service " + name, 'info');
+        $.ajax({
+            type: "POST",
+            url: '/minecraft/api/service/action/',
+            data: {'name': name, 'action': action},
+            dataType: 'json',
+            success: function(data) {
+                $.notify("Successfully performed " + action + " on service " + name, 'success');
+            },
+            fail: function(data) {
+                $.notify('Failed to ' + action + " " + name, 'error');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        refreshServicesList();
+        setInterval("refreshServicesList()", 2000);
+    });
+</script>
+{% endblock script %}
+
+{% block body %}
+    <div class="col-md-8 col-md-offset-2">
+    <h1>System information</h1>
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Program name</th>
+                    <th class="text-center">State</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="servicelist">
+
+            </tbody>
+        </table>
+    </div>
+{% endblock body %}

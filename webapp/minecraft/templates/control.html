@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% block title %}Basic Control{% endblock title %}
+
+{% block script %}
+<script type="text/javascript">
+    var csrftoken = $.cookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    function doCommand(command) {
+        $.ajax({
+            type: "POST",
+            url: '/minecraft/api/console/',
+            data: {'command': command},
+            dataType: 'json',
+            success: function(data) {
+                $.notify("Executed command " + data.command + " : " + data.response, 'info');
+            },
+            error: function(jqxhr, textstatus) {
+                $.notify("Failed to execute command : " + jqxhr.status+ " " + jqxhr.statusText, 'error');
+            }
+        });
+    }
+</script>
+{% endblock script %}
+
+{% block body %}
+    <div class="col-md-8 col-md-offset-2">
+        <h1>Weather actions</h1>
+            <p class="text-center">
+                <span class="fa-stack fa-5x text-warning" onclick='doCommand("weather clear")'>
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-sun-o fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="fa-stack fa-5x text-info" onclick='doCommand("weather rain")'>
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-tint fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="fa-stack fa-5x text-danger" onclick='doCommand("weather thunder")'>
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
+                </span>
+            </p>
+        <h1>Time actions</h1>
+            <p class="text-center">
+                <span class="fa-stack fa-5x text-warning" onclick='doCommand("time set 0")'>
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-sun-o fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="fa-stack fa-5x text-info" onclick='doCommand("time set 12000")'>
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa fa-moon-o fa-stack-1x fa-inverse"></i>
+                </span>
+            </p>
+    </div>
+{% endblock body %}
