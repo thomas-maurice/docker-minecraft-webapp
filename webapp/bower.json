@@ -1,0 +1,29 @@
+{
+  "name": "minecraft-webapp",
+  "version": "0.0.1",
+  "authors": [
+    "Thomas Maurice <thomas@maurice.fr>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "WTFPL",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.9",
+    "jquery.cookie": "jquery-cookie#~1.4.1",
+    "bootstrap": "3.3",
+    "font-awesome": "fontawesome#4.4",
+    "notifyjs": "~0.3.2",
+    "hint.css": "~1.3.5",
+    "Keypress": "~2.1.3"
+  }
+}

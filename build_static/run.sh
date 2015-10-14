@@ -3,8 +3,10 @@
 set -e
 set -x
 
-bower install --allow-root
+addgroup -g $DESTINATION_GID build
+adduser -S -G build -s /bin/bash -h /home/build -u $DESTINATION_UID build
 
-if ! [ -z "$DESTINATION_UID" ] && ! [ -z "$DESTINATION_GID" ]; then
-    chown -R $DESTINATION_UID:$DESTINATION_GID /build/bower_components
-fi;
+echo '{"interactive": false}' > /home/build/.bowerrc
+su -c "npm install" build
+su -c "bower install" build
+su -c "grunt" build

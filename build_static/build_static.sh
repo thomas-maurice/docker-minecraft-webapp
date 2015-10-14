@@ -2,8 +2,8 @@
 
 set -x
 
-UID=`id -u`
-GID=`id -g`
+UID=`id -u 2>>/dev/null`
+GID=`id -g 2>>/dev/null`
 
 sudo docker run -v `pwd`:/build \
     -e DESTINATION_UID=$UID \

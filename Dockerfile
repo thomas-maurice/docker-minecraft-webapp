@@ -60,7 +60,7 @@ COPY supervisor/minecraft.conf \
      supervisor/webapp.conf \
      supervisor/nginx.conf \
      /etc/supervisor/conf.d/
-COPY webapp /home/minecraft/webapp
+COPY webapp_build /home/minecraft/webapp
 COPY textures /var/www/textures
 
 RUN chown -R www-data:minecraft /var/www/textures
@@ -74,11 +74,6 @@ RUN ln -s /etc/bash.bashrc /root/.bashrc && \
 # pain in the ass in my opinion.
 RUN cd /home/minecraft/webapp && \
     pip install -r requirements.txt && \
-    echo '{"interactive": false}' > ../.bowerrc && \
-    chown -R minecraft:minecraft /home/minecraft && \
-    cd /home/minecraft/webapp && \
-    su -c "python manage.py bower install" minecraft && \
-    python manage.py collectstatic --noinput && \
     chown -R minecraft:minecraft /home/minecraft
 
 EXPOSE 22 80 25565
