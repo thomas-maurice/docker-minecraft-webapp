@@ -16,8 +16,6 @@ RUN apk update && \
         sudo \
         py-pip \
         nginx \
-        nodejs \
-        git \
         bash \
         logrotate
 
@@ -39,10 +37,7 @@ COPY misc/authorized_keys /home/minecraft/.ssh/authorized_keys
 RUN echo "minecraft ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/minecraft
 RUN mkdir /var/run/sshd && ssh-keygen -A
 
-# Npm & pip installs
-# FIXME: remove nodejs dependency by building the static contents
-# prior to docker run
-RUN npm install -g bower
+# Pip installs
 RUN pip install supervisor && \
     mkdir /var/log/supervisor && \
     ln -s /etc/supervisor/supervisord.conf /etc/supervisord.conf
@@ -68,10 +63,6 @@ RUN chown -R www-data:minecraft /var/www/textures
 RUN ln -s /etc/bash.bashrc /root/.bashrc && \
     ln -s /etc/bash.bashrc /home/minecraft/.bashrc
 
-# Build the webapp
-# Fixme : To be removed by a local compiling (via another docker why not)
-# and direct upload of the common/static directory content. That would avoid
-# pain in the ass in my opinion.
 RUN cd /home/minecraft/webapp && \
     pip install -r requirements.txt && \
     chown -R minecraft:minecraft /home/minecraft
