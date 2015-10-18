@@ -20,7 +20,7 @@ module.exports = function(grunt) {
                 },
                 {
                     expand: true,
-                    cwd: 'bower_components/jquery/dist',
+                    cwd: 'bower_components/jquery',
                     src: ['jquery.min.js', 'jquery.min.map'],
                     dest: dest + '/js/'
                 },

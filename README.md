@@ -1,6 +1,8 @@
 # Docker Minecraft Server -  Webapp
 This documentation is pretty shitty for now, more to come :)
 
+[![Build Status](https://travis-ci.org/thomas-maurice/docker-minecraft-webapp.svg?branch=master)](https://travis-ci.org/thomas-maurice/docker-minecraft-webapp)
+
 ## TL;DR
 This prokect aims at maintaining a self-contained solution to manage and control
 your Minecraft server. Originally the idea was that I wanted a Minecraft server,

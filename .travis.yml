@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+install:
+  - docker pull alpine
+
+before_script:
+  - docker build -t build_static build_static
+  - ./build_webapp.sh
+
+script:
+  - docker build -t minecraft .
+  - docker images
+
